@@ -1,0 +1,27 @@
+[tool.poetry]
+name = "rfernet"
+version = "0.1.0"
+description = "Fast Fernet bindings for Python"
+authors = ["Aviram Hassan <aviramyhassan@gmail.com>"]
+license = "MIT"
+
+[tool.poetry.dependencies]
+python = "^3.7"
+
+[tool.poetry.dev-dependencies]
+pytest = "^5.3"
+
+
+[tool.maturin]
+manylinux = "off"
+rustc-extra-args = "-C target-feature=+sse2"
+strip = "on"
+
+[tool.black]
+line-length = 88
+target-version = ['py36', 'py37', 'py38']
+include = '\.pyi?$'
+[build-system]
+build-backend = "maturin"
+requires = ["maturin>=0.7.7,<0.8"]
+
