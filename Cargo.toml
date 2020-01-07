@@ -10,12 +10,12 @@ keywords = ["fast", "fernet"]
 include = [
     "Cargo.toml",
 #    "CHANGELOG.md",
-#    "LICENSE",
+   "LICENSE",
     "pyproject.toml",
-#    "README.md",
+   "README.md",
     "rust-toolchain",
     "src/*",
-#    "test/*.py",
+    "test/*.py",
 #    "test/requirements.txt",
 ]
 
@@ -28,7 +28,6 @@ requires-python = ">=3.7"
 classifier = [
     "Development Status :: 5 - Production/Stable",
     "Intended Audience :: Developers",
-    "License :: OSI Approved :: Apache Software License",
     "License :: OSI Approved :: MIT License",
     "Operating System :: MacOS",
     "Operating System :: Microsoft :: Windows",
