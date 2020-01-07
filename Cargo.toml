@@ -1,21 +1,22 @@
 [package]
 name = "rfernet"
-version = "0.1.0"
+version = "0.1.3"
 authors = ["Aviram Hassan <aviramyhassan@gmail.com>"]
 description = "Fast Fernet bindings for Python"
 license = "MIT"
 edition = "2018"
 keywords = ["fast", "fernet"]
+readme = "README.md"
 
 include = [
     "Cargo.toml",
 #    "CHANGELOG.md",
-#    "LICENSE",
+   "LICENSE",
     "pyproject.toml",
-#    "README.md",
+   "README.md",
     "rust-toolchain",
     "src/*",
-#    "test/*.py",
+    "test/*.py",
 #    "test/requirements.txt",
 ]
 
@@ -24,11 +25,10 @@ name = "rfernet"
 crate-type = ["cdylib"]
 
 [package.metadata.maturin]
-requires-python = ">=3.7"
+requires-python = ">=3.6"
 classifier = [
     "Development Status :: 5 - Production/Stable",
     "Intended Audience :: Developers",
-    "License :: OSI Approved :: Apache Software License",
     "License :: OSI Approved :: MIT License",
     "Operating System :: MacOS",
     "Operating System :: Microsoft :: Windows",
