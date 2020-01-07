@@ -1,6 +1,6 @@
 [package]
 name = "rfernet"
-version = "0.1.0"
+version = "0.1.1"
 authors = ["Aviram Hassan <aviramyhassan@gmail.com>"]
 description = "Fast Fernet bindings for Python"
 license = "MIT"
