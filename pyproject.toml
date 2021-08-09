@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "rfernet"
-version = "0.1.3"
+version = "0.2.0"
 description = "Fast Fernet bindings for Python"
 authors = ["Aviram Hassan <aviramyhassan@gmail.com>"]
 license = "MIT"
