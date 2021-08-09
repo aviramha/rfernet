@@ -26,7 +26,7 @@ jobs:
           profile: minimal
           toolchain: nightly
           override: true
-      - run: yum install -y libffi libffi-devel openssl openssl-devel
+      - run: apt install -y libffi libffi-dev openssl openssl-dev
       - run: /opt/python/${{ matrix.python-path }}/bin/python -m venv .venv
       - run: .venv/bin/pip install -U pip wheel
       - run: .venv/bin/pip install -U twine maturin
@@ -35,32 +35,6 @@ jobs:
       - run: .venv/bin/pip install rfernet --no-index -f target/wheels
       - run: .venv/bin/pytest
       - run: .venv/bin/twine upload --non-interactive --skip-existing target/wheels/*
-  release_windows:
-    name: Release windows
-    runs-on: windows-latest
-    strategy:
-      matrix:
-        python-version: ['3.6', '3.7', '3.8', '3.9']
-    env:
-      TWINE_PASSWORD: ${{secrets.TWINE_PASSWORD}}
-      TWINE_USERNAME: ${{secrets.TWINE_USERNAME}}
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions-rs/toolchain@v1
-        with:
-          profile: minimal
-          toolchain: nightly
-          override: true
-      - name: Set up Python
-        uses: actions/setup-python@v2
-        with:
-          python-version: ${{ matrix.python-version }}
-      - run: pip install --user -U pip wheel twine maturin
-      - run: pip install -r requirements.txt
-      - run: maturin build --no-sdist --release --strip -i $pythonLocation"python.exe"
-      - run: pip install rfernet --no-index -f target/wheels
-      - run: pytest
-      - run: twine upload --non-interactive --skip-existing target\wheels\*
 
   release_macos:
     name: Release macOS
