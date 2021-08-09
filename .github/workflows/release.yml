@@ -26,7 +26,7 @@ jobs:
           profile: minimal
           toolchain: nightly
           override: true
-      - run: apt update && apt install libffi libffi-dev -y
+      - run: apt update && apt install libffi-dev -y
       - run: /opt/python/${{ matrix.python-path }}/bin/python -m venv .venv
       - run: .venv/bin/pip install -U pip wheel
       - run: .venv/bin/pip install -U twine maturin
