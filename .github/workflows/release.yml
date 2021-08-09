@@ -26,7 +26,6 @@ jobs:
           profile: minimal
           toolchain: nightly
           override: true
-      - run: apt install -y libffi libffi-dev openssl openssl-dev
       - run: /opt/python/${{ matrix.python-path }}/bin/python -m venv .venv
       - run: .venv/bin/pip install -U pip wheel
       - run: .venv/bin/pip install -U twine maturin
