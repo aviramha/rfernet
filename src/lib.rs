@@ -4,7 +4,6 @@ use pyo3::exceptions;
 use pyo3::prelude::*;
 use pyo3::types::PyBytes;
 
-
 mod exc;
 
 #[pyclass]
@@ -25,7 +24,7 @@ impl Fernet {
             None => Err(exceptions::PyValueError::new_err("Invalid arguments")),
             Some(fernet_obj) => Ok(Fernet {
                 fernet_: fernet_obj,
-            })
+            }),
         }
     }
 
@@ -40,14 +39,18 @@ impl Fernet {
 
     fn decrypt(&self, py: Python, token: &str) -> PyResult<PyObject> {
         match self.fernet_.decrypt(token) {
-            Err(_err) => Err(exc::DecryptionError::new_err("Decryption failed, token or key invalid.")),
+            Err(_err) => Err(exc::DecryptionError::new_err(
+                "Decryption failed, token or key invalid.",
+            )),
             Ok(data) => Ok(PyBytes::new(py, &data).into()),
         }
     }
 
     fn decrypt_with_ttl(&self, py: Python, token: &str, ttl_secs: u64) -> PyResult<PyObject> {
         match self.fernet_.decrypt_with_ttl(token, ttl_secs) {
-            Err(_err) => Err(exc::DecryptionError::new_err("Decryption failed, token or key invalid.")),
+            Err(_err) => Err(exc::DecryptionError::new_err(
+                "Decryption failed, token or key invalid.",
+            )),
             Ok(data) => Ok(PyBytes::new(py, &data).into()),
         }
     }
@@ -61,8 +64,8 @@ impl MultiFernet {
         match fernets {
             None => Err(exceptions::PyValueError::new_err("Invalid arguments")),
             Some(f) => Ok(MultiFernet {
-                fernet_: fernet::MultiFernet::new(f)
-            })
+                fernet_: fernet::MultiFernet::new(f),
+            }),
         }
     }
 
@@ -72,7 +75,9 @@ impl MultiFernet {
 
     fn decrypt(&self, py: Python, token: &str) -> PyResult<PyObject> {
         match self.fernet_.decrypt(token) {
-            Err(_err) => Err(exc::DecryptionError::new_err("Decryption failed, token or key invalid.")),
+            Err(_err) => Err(exc::DecryptionError::new_err(
+                "Decryption failed, token or key invalid.",
+            )),
             Ok(data) => Ok(PyBytes::new(py, &data).into()),
         }
     }
