@@ -12,6 +12,10 @@ struct Fernet {
     fernet_: fernet::Fernet,
 }
 
+#[pyclass]
+struct MultiFernet {
+    fernet_: fernet::MultiFernet,
+}
 
 #[pymethods]
 impl Fernet {
@@ -52,15 +56,43 @@ impl Fernet {
             Ok(data) => Ok(PyBytes::new(py, &data).into()),
         }
     }
-
 }
 
+#[pymethods]
+impl MultiFernet {
+    #[new]
+    fn new(obj: &PyRawObject, keys: Vec<&str>) -> PyResult<()> {
+        let fernets: Option<Vec<_>> = keys.iter().map(|&k| fernet::Fernet::new(k)).collect();
+        match fernets {
+            None => Err(exceptions::ValueError::py_err("Invalid arguments")),
+            Some(f) => {
+                obj.init({
+                    MultiFernet {
+                        fernet_: fernet::MultiFernet::new(f)
+                    }
+                });
+                Ok(())
+            }
+        }
+    }
 
+    fn encrypt(&self, data: &[u8]) -> PyResult<String> {
+        Ok(self.fernet_.encrypt(data))
+    }
+
+    fn decrypt(&self, py: Python, token: &str) -> PyResult<PyObject> {
+        match self.fernet_.decrypt(token) {
+            Err(_err) => Err(exc::DecryptionError::py_err("Decryption failed, token or key invalid.")),
+            Ok(data) => Ok(PyBytes::new(py, &data).into()),
+        }
+    }
+}
 
 /// This module is a python module implemented in Rust.
 #[pymodule]
 fn rfernet(py: Python, m: &PyModule) -> PyResult<()> {
     m.add_class::<Fernet>()?;
+    m.add_class::<MultiFernet>()?;
     m.add("DecryptionError", py.get_type::<exc::DecryptionError>())?;
     Ok(())
 }
