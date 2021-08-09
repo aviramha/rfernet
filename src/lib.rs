@@ -61,17 +61,12 @@ impl Fernet {
 #[pymethods]
 impl MultiFernet {
     #[new]
-    fn new(obj: &PyRawObject, keys: Vec<&str>) -> PyResult<()> {
+    fn new(keys: Vec<&str>) -> PyResult<Self> {
         let fernets: Option<Vec<_>> = keys.iter().map(|&k| fernet::Fernet::new(k)).collect();
         match fernets {
             None => Err(exceptions::ValueError::py_err("Invalid arguments")),
-            Some(f) => {
-                obj.init({
-                    MultiFernet {
-                        fernet_: fernet::MultiFernet::new(f)
-                    }
-                });
-                Ok(())
+            Some(f) => MultiFernet {
+                fernet_: fernet::MultiFernet::new(f)
             }
         }
     }
