@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-path: ['cp36-cp36m', 'cp37-cp37m', 'cp38-cp38', 'cp39-cp39', 'cp310-cp310']
+        python-path: ['cp37-cp37m', 'cp38-cp38', 'cp39-cp39', 'cp310-cp310', 'cp311-cp311']
     container: quay.io/pypa/manylinux_2_24_x86_64:latest
     env:
       TWINE_PASSWORD: ${{secrets.TWINE_PASSWORD}}
@@ -24,14 +24,14 @@ jobs:
       - uses: actions-rs/toolchain@v1
         with:
           profile: minimal
-          toolchain: nightly
+          toolchain: stable
           override: true
       - run: apt update && apt install libffi-dev libssl-dev -y
       - run: /opt/python/${{ matrix.python-path }}/bin/python -m venv .venv
       - run: .venv/bin/pip install -U pip wheel
       - run: .venv/bin/pip install -U twine maturin
       - run: .venv/bin/pip install -r requirements.txt
-      - run: OPENSSL_STATIC=1 OPENSSL_LIB_DIR=/usr/lib/x86_64-linux-gnu/ OPENSSL_INCLUDE_DIR=/usr/include/openssl .venv/bin/maturin build --no-sdist --release --strip --manylinux 2_24 -i /opt/python/${{ matrix.python-path }}/bin/python --target x86_64-unknown-linux-gnu
+      - run: OPENSSL_STATIC=1 OPENSSL_LIB_DIR=/usr/lib/x86_64-linux-gnu/ OPENSSL_INCLUDE_DIR=/usr/include/openssl .venv/bin/maturin build --release --strip --manylinux 2_24 -i /opt/python/${{ matrix.python-path }}/bin/python --target x86_64-unknown-linux-gnu
       - run: .venv/bin/pip install rfernet --no-index -f target/wheels
       - run: .venv/bin/pytest
       - run: .venv/bin/twine upload --non-interactive --skip-existing target/wheels/*
@@ -40,7 +40,8 @@ jobs:
     name: Release macOS
     strategy:
       matrix:
-        python-version: ['3.6', '3.7', '3.8', '3.9']
+        python-version: ['3.7', '3.8', '3.9', '3.10', '3.11']
+        target-arch: ['x86_64-apple-darwin']
     runs-on: macos-latest
     env:
       TWINE_PASSWORD: ${{secrets.TWINE_PASSWORD}}
@@ -50,18 +51,20 @@ jobs:
       - uses: actions-rs/toolchain@v1
         with:
           profile: minimal
-          toolchain: nightly
+          toolchain: stable
           override: true
+          target: ${{ matrix.target-arch }}
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
           python-version: ${{ matrix.python-version }}
       - run: pip install -U pip wheel twine maturin
       - run: pip install -r requirements.txt
-      - run: maturin build --no-sdist --release --strip --manylinux off -i $pythonLocation/python --target x86_64-apple-darwin
+      - run: maturin build --release --strip --manylinux off -i $pythonLocation/python --target ${{ matrix.target-arch }}
       - run: pip install rfernet --no-index -f target/wheels
       - run: pytest
       - run: twine upload --non-interactive --skip-existing target/wheels/*
+  
   release_sdist:
     name: Release sdist
     runs-on: ubuntu-latest
@@ -73,7 +76,7 @@ jobs:
       - uses: actions-rs/toolchain@v1
         with:
           profile: minimal
-          toolchain: nightly
+          toolchain: stable
           override: true
       - name: Set up Python
         uses: actions/setup-python@v2

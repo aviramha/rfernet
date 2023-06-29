@@ -12,7 +12,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest]
-        python-version: ['3.6', '3.7', '3.8', '3.9', '3.10.0-rc.1']
+        python-version: ['3.7', '3.8', '3.9', '3.10', '3.11']
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v2
@@ -27,9 +27,9 @@ jobs:
           python-version: ${{ matrix.python-version }}
       - run: pip install --user -U pip wheel
       - run: pip install -r requirements.txt
-      - run: maturin build --no-sdist --release --strip --manylinux off -i $pythonLocation/python
+      - run: maturin build --release --strip --manylinux off -i $pythonLocation/python
         if: ${{ runner.os != 'Windows' }}
-      - run: maturin build --no-sdist --release --strip --manylinux off -i $pythonLocation"python.exe"
+      - run: maturin build --release --strip --manylinux off -i $pythonLocation"python.exe"
         if: ${{ runner.os == 'Windows' }}
       - run: pip install rfernet --no-index -f target/wheels
       - run: pytest tests/
