@@ -14,11 +14,10 @@ jobs:
     strategy:
       matrix:
         python-path: ['cp37-cp37m', 'cp38-cp38', 'cp39-cp39', 'cp310-cp310', 'cp311-cp311']
-    container: quay.io/pypa/manylinux_2_24_x86_64:latest
+    container: quay.io/pypa/manylinux_2_28_x86_64:latest
     env:
       TWINE_PASSWORD: ${{secrets.TWINE_PASSWORD}}
       TWINE_USERNAME: ${{secrets.TWINE_USERNAME}}
-
     steps:
       - uses: actions/checkout@v2
       - uses: actions-rs/toolchain@v1
@@ -26,12 +25,13 @@ jobs:
           profile: minimal
           toolchain: stable
           override: true
-      - run: apt update && apt install libffi-dev libssl-dev -y
+          target: x86_64-unknown-linux-gnu
+      - run: yum makecache && yum -y install libffi-devel openssl-devel
       - run: /opt/python/${{ matrix.python-path }}/bin/python -m venv .venv
       - run: .venv/bin/pip install -U pip wheel
       - run: .venv/bin/pip install -U twine maturin
       - run: .venv/bin/pip install -r requirements.txt
-      - run: OPENSSL_STATIC=1 OPENSSL_LIB_DIR=/usr/lib/x86_64-linux-gnu/ OPENSSL_INCLUDE_DIR=/usr/include/openssl .venv/bin/maturin build --release --strip --manylinux 2_24 -i /opt/python/${{ matrix.python-path }}/bin/python --target x86_64-unknown-linux-gnu
+      - run: OPENSSL_STATIC=1 .venv/bin/maturin build --release --strip --manylinux 2_28 -i /opt/python/${{ matrix.python-path }}/bin/python --target x86_64-unknown-linux-gnu
       - run: .venv/bin/pip install rfernet --no-index -f target/wheels
       - run: .venv/bin/pytest
       - run: .venv/bin/twine upload --non-interactive --skip-existing target/wheels/*
