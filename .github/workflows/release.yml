@@ -13,7 +13,8 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-path: ['cp37-cp37m', 'cp38-cp38', 'cp39-cp39', 'cp310-cp310', 'cp311-cp311']
+        # python-path: ['cp37-cp37m', 'cp38-cp38', 'cp39-cp39', 'cp310-cp310', 'cp311-cp311']
+        python-path: ['cp310-cp310']
     container: quay.io/pypa/manylinux_2_24_x86_64:latest
     env:
       TWINE_PASSWORD: ${{secrets.TWINE_PASSWORD}}
@@ -26,6 +27,18 @@ jobs:
           profile: minimal
           toolchain: stable
           override: true
+      # Update stretch repositories to fix "stretch Release 404 Not Found".
+      - run: |
+          echo "
+          deb http://cdn-aws.deb.debian.org/debian buster main
+          deb-src http://cdn-aws.deb.debian.org/debian buster main
+          deb http://security.debian.org/debian-security buster/updates main
+          deb-src http://security.debian.org/debian-security buster/updates main
+          deb http://cdn-aws.deb.debian.org/debian buster-updates main
+          deb-src http://cdn-aws.deb.debian.org/debian buster-updates main
+          deb http://cdn-aws.deb.debian.org/debian buster-backports main
+          deb-src http://cdn-aws.deb.debian.org/debian buster-backports main
+          " > /etc/apt/sources.list
       - run: apt update && apt install libffi-dev libssl-dev -y
       - run: /opt/python/${{ matrix.python-path }}/bin/python -m venv .venv
       - run: .venv/bin/pip install -U pip wheel
@@ -36,53 +49,53 @@ jobs:
       - run: .venv/bin/pytest
       - run: .venv/bin/twine upload --non-interactive --skip-existing target/wheels/*
 
-  release_macos:
-    name: Release macOS
-    strategy:
-      matrix:
-        python-version: ['3.7', '3.8', '3.9', '3.10', '3.11']
-        target-arch: ['x86_64-apple-darwin']
-    runs-on: macos-latest
-    env:
-      TWINE_PASSWORD: ${{secrets.TWINE_PASSWORD}}
-      TWINE_USERNAME: ${{secrets.TWINE_USERNAME}}
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions-rs/toolchain@v1
-        with:
-          profile: minimal
-          toolchain: stable
-          override: true
-          target: ${{ matrix.target-arch }}
-      - name: Set up Python
-        uses: actions/setup-python@v2
-        with:
-          python-version: ${{ matrix.python-version }}
-      - run: pip install -U pip wheel twine maturin
-      - run: pip install -r requirements.txt
-      - run: maturin build --release --strip --manylinux off -i $pythonLocation/python --target ${{ matrix.target-arch }}
-      - run: pip install rfernet --no-index -f target/wheels
-      - run: pytest
-      - run: twine upload --non-interactive --skip-existing target/wheels/*
+  # release_macos:
+  #   name: Release macOS
+  #   strategy:
+  #     matrix:
+  #       python-version: ['3.7', '3.8', '3.9', '3.10', '3.11']
+  #       target-arch: ['x86_64-apple-darwin']
+  #   runs-on: macos-latest
+  #   env:
+  #     TWINE_PASSWORD: ${{secrets.TWINE_PASSWORD}}
+  #     TWINE_USERNAME: ${{secrets.TWINE_USERNAME}}
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #     - uses: actions-rs/toolchain@v1
+  #       with:
+  #         profile: minimal
+  #         toolchain: stable
+  #         override: true
+  #         target: ${{ matrix.target-arch }}
+  #     - name: Set up Python
+  #       uses: actions/setup-python@v2
+  #       with:
+  #         python-version: ${{ matrix.python-version }}
+  #     - run: pip install -U pip wheel twine maturin
+  #     - run: pip install -r requirements.txt
+  #     - run: maturin build --release --strip --manylinux off -i $pythonLocation/python --target ${{ matrix.target-arch }}
+  #     - run: pip install rfernet --no-index -f target/wheels
+  #     - run: pytest
+  #     - run: twine upload --non-interactive --skip-existing target/wheels/*
   
-  release_sdist:
-    name: Release sdist
-    runs-on: ubuntu-latest
-    env:
-      TWINE_PASSWORD: ${{secrets.TWINE_PASSWORD}}
-      TWINE_USERNAME: ${{secrets.TWINE_USERNAME}}
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions-rs/toolchain@v1
-        with:
-          profile: minimal
-          toolchain: stable
-          override: true
-      - name: Set up Python
-        uses: actions/setup-python@v2
-        with:
-          python-version: 3.8
-      - run: pip install -U pip wheel twine maturin
-      - run: pip install -r requirements.txt
-      - run: maturin sdist
-      - run: twine upload --non-interactive --skip-existing target/wheels/*
+  # release_sdist:
+  #   name: Release sdist
+  #   runs-on: ubuntu-latest
+  #   env:
+  #     TWINE_PASSWORD: ${{secrets.TWINE_PASSWORD}}
+  #     TWINE_USERNAME: ${{secrets.TWINE_USERNAME}}
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #     - uses: actions-rs/toolchain@v1
+  #       with:
+  #         profile: minimal
+  #         toolchain: stable
+  #         override: true
+  #     - name: Set up Python
+  #       uses: actions/setup-python@v2
+  #       with:
+  #         python-version: 3.8
+  #     - run: pip install -U pip wheel twine maturin
+  #     - run: pip install -r requirements.txt
+  #     - run: maturin sdist
+  #     - run: twine upload --non-interactive --skip-existing target/wheels/*
