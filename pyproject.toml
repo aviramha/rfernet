@@ -21,7 +21,7 @@ classifier = [
 
 [tool.poetry]
 name = "rfernet"
-version = "0.3.1"
+version = "0.3.2"
 description = "Fast Fernet bindings for Python"
 authors = ["Aviram Hassan <aviramyhassan@gmail.com>"]
 license = "MIT"
@@ -44,4 +44,4 @@ include = '\.pyi?$'
 
 [build-system]
 build-backend = "maturin"
-requires = ["maturin>=1.1.0,<1.2.0"]
+requires = ["maturin>=1.1.0,<1.4.0"]
