@@ -14,6 +14,7 @@ classifier = [
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
     "Programming Language :: Python",
     "Programming Language :: Rust",
     "Typing :: Typed",
@@ -21,7 +22,7 @@ classifier = [
 
 [tool.poetry]
 name = "rfernet"
-version = "0.3.2"
+version = "0.3.3"
 description = "Fast Fernet bindings for Python"
 authors = ["Aviram Hassan <aviramyhassan@gmail.com>"]
 license = "MIT"
