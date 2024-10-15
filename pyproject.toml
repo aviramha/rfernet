@@ -1,6 +1,6 @@
 [project]
 name = "rfernet"
-requires-python = ">=3.7"
+requires-python = ">=3.8"
 classifier = [
     "Development Status :: 5 - Production/Stable",
     "Intended Audience :: Developers",
@@ -9,11 +9,11 @@ classifier = [
     "Operating System :: Microsoft :: Windows",
     "Operating System :: POSIX :: Linux",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.7",
     "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
     "Programming Language :: Python",
     "Programming Language :: Rust",
     "Typing :: Typed",
@@ -21,13 +21,13 @@ classifier = [
 
 [tool.poetry]
 name = "rfernet"
-version = "0.3.2"
+version = "0.3.3"
 description = "Fast Fernet bindings for Python"
 authors = ["Aviram Hassan <aviramyhassan@gmail.com>"]
 license = "MIT"
 
 [tool.poetry.dependencies]
-python = "^3.7"
+python = "^3.8"
 
 [tool.poetry.dev-dependencies]
 pytest = "^7.4"
@@ -39,7 +39,7 @@ strip = true
 
 [tool.black]
 line-length = 88
-target-version = ['py37', 'py38']
+target-version = ['py38']
 include = '\.pyi?$'
 
 [build-system]

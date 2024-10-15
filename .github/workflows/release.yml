@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-path: ['cp37-cp37m', 'cp38-cp38', 'cp39-cp39', 'cp310-cp310', 'cp311-cp311']
+        python-path: ['cp38-cp38', 'cp39-cp39', 'cp310-cp310', 'cp311-cp311', 'cp312-cp312']
     container: quay.io/pypa/manylinux_2_28_x86_64:latest
     env:
       TWINE_PASSWORD: ${{secrets.TWINE_PASSWORD}}
@@ -40,7 +40,7 @@ jobs:
     name: Release macOS
     strategy:
       matrix:
-        python-version: ['3.7', '3.8', '3.9', '3.10', '3.11']
+        python-version: ['3.8', '3.9', '3.10', '3.11', '3.12']
         target-arch: ['x86_64-apple-darwin']
     runs-on: macos-latest
     env:
