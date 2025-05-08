@@ -66,13 +66,14 @@ jobs:
           command: clippy
           args: -- -D warnings
 
-  test_manylinux_release_x86_64:
-      name: Test manylinux release build (x86_64)
+  test_manylinux_release:
+      name: Test manylinux release build
       runs-on: ubuntu-latest
       strategy:
         matrix:
-          python-path: ['cp38-cp38', 'cp39-cp39', 'cp310-cp310', 'cp311-cp311', 'cp312-cp312', 'cp313-cp313']
-      container: quay.io/pypa/manylinux_2_28_x86_64:latest
+          python-path: ['cp38-cp38', 'cp39-cp39', 'cp310-cp310', 'cp311-cp311', 'cp312-cp312']
+          target-arch: ['x86_64', 'aarch64']
+      container: quay.io/pypa/manylinux_2_28_${{ matrix.target-arch }}:latest
       steps:
         - uses: actions/checkout@v2
         - uses: actions-rs/toolchain@v1
@@ -80,36 +81,38 @@ jobs:
             profile: minimal
             toolchain: stable
             override: true
-            target: x86_64-unknown-linux-gnu
+            target: ${{ matrix.target-arch }}-unknown-linux-gnu
         - run: yum makecache && yum -y install libffi-devel openssl-devel
         - run: /opt/python/${{ matrix.python-path }}/bin/python -m venv .venv
         - run: .venv/bin/pip install -U pip wheel
         - run: .venv/bin/pip install -U twine maturin
         - run: .venv/bin/pip install -r requirements.txt
-        - run: OPENSSL_STATIC=1 .venv/bin/maturin build --release --strip --manylinux 2_28 -i /opt/python/${{ matrix.python-path }}/bin/python --target x86_64-unknown-linux-gnu
+        - run: OPENSSL_STATIC=1 .venv/bin/maturin build --release --strip --manylinux 2_28 -i /opt/python/${{ matrix.python-path }}/bin/python --target ${{ matrix.target-arch }}-unknown-linux-gnu
         - run: .venv/bin/pip install rfernet --no-index -f target/wheels
         - run: .venv/bin/pytest
 
-  test_manylinux_release_aarch64:
-      name: Test manylinux release build (aarch64)
-      runs-on: ubuntu-latest
-      strategy:
-        matrix:
-          python-path: ['cp38-cp38', 'cp39-cp39', 'cp310-cp310', 'cp311-cp311', 'cp312-cp312', 'cp313-cp313']
-      container: quay.io/pypa/manylinux_2_28_aarch64:latest
-      steps:
-        - uses: actions/checkout@v2
-        - uses: actions-rs/toolchain@v1
-          with:
-            profile: minimal
-            toolchain: stable
-            override: true
-            target: aarch64-unknown-linux-gnu
-        - run: yum makecache && yum -y install libffi-devel openssl-devel
-        - run: /opt/python/${{ matrix.python-path }}/bin/python -m venv .venv
-        - run: .venv/bin/pip install -U pip wheel
-        - run: .venv/bin/pip install -U twine maturin
-        - run: .venv/bin/pip install -r requirements.txt
-        - run: OPENSSL_STATIC=1 .venv/bin/maturin build --release --strip --manylinux 2_28 -i /opt/python/${{ matrix.python-path }}/bin/python --target aarch64-unknown-linux-gnu
-        - run: .venv/bin/pip install rfernet --no-index -f target/wheels
-        - run: .venv/bin/pytest
+  test_release_macos:
+    name: Test macOS release build
+    strategy:
+      matrix:
+        python-version: ['3.8', '3.9', '3.10', '3.11', '3.12']
+        target-arch: ['x86_64-apple-darwin', 'aarch64-apple-darwin']
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: stable
+          override: true
+          target: ${{ matrix.target-arch }}
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+      - run: pip install -U pip wheel twine maturin
+      - run: pip install -U twine maturin
+      - run: pip install -r requirements.txt
+      - run: maturin build --release --strip --manylinux off -i $pythonLocation/python --target ${{ matrix.target-arch }}
+      - run: pip install rfernet --no-index -f target/wheels
+      - run: pytest

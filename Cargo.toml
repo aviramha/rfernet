@@ -29,5 +29,5 @@ fernet = "*"
 once_cell = "1.17.0"
 
 [dependencies.pyo3]
-version = "*"
-features = ["extension-module"]
+version = "0.21.2"
+features = ["extension-module", "gil-refs"]
