@@ -36,7 +36,9 @@ jobs:
       - run: OPENSSL_STATIC=1 .venv/bin/maturin build --release --strip --manylinux 2_28 -i /opt/python/${{ matrix.python-path }}/bin/python --target x86_64-unknown-linux-gnu
       - run: .venv/bin/pip install rfernet --no-index -f target/wheels
       - run: .venv/bin/pytest
-      - run: .venv/bin/twine upload --non-interactive --skip-existing target/wheels/*
+      - name: Upload wheels to PyPI
+        if: secrets.TWINE_USERNAME != '' && secrets.TWINE_PASSWORD != ''
+        run: .venv/bin/twine upload --non-interactive --skip-existing target/wheels/*
       - name: Update GitHub Release
         if: github.event_name == 'release'
         uses: softprops/action-gh-release@v2
@@ -76,7 +78,9 @@ jobs:
       - run: OPENSSL_STATIC=1 .venv/bin/maturin build --release --strip --manylinux 2_28 -i /opt/python/${{ matrix.python-path }}/bin/python --target aarch64-unknown-linux-gnu
       - run: .venv/bin/pip install rfernet --no-index -f target/wheels
       - run: .venv/bin/pytest
-      - run: .venv/bin/twine upload --non-interactive --skip-existing target/wheels/*
+      - name: Upload wheels to PyPI
+        if: secrets.TWINE_USERNAME != '' && secrets.TWINE_PASSWORD != ''
+        run: .venv/bin/twine upload --non-interactive --skip-existing target/wheels/*
       - name: Update GitHub Release
         if: github.event_name == 'release'
         uses: softprops/action-gh-release@v2
@@ -117,7 +121,9 @@ jobs:
       - run: maturin build --release --strip --manylinux off -i $pythonLocation/python --target ${{ matrix.target-arch }}
       - run: pip install rfernet --no-index -f target/wheels
       - run: pytest
-      - run: twine upload --non-interactive --skip-existing target/wheels/*
+      - name: Upload wheels to PyPI
+        if: secrets.TWINE_USERNAME != '' && secrets.TWINE_PASSWORD != ''
+        run: twine upload --non-interactive --skip-existing target/wheels/*
       - name: Update GitHub Release
         if: github.event_name == 'release'
         uses: softprops/action-gh-release@v2
@@ -151,4 +157,6 @@ jobs:
       - run: pip install -U pip wheel twine maturin
       - run: pip install -r requirements.txt
       - run: maturin sdist
-      - run: twine upload --non-interactive --skip-existing target/wheels/*
+      - name: Upload wheels to PyPI
+        if: secrets.TWINE_USERNAME != '' && secrets.TWINE_PASSWORD != ''
+        run: twine upload --non-interactive --skip-existing target/wheels/*
