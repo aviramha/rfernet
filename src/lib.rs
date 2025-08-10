@@ -60,7 +60,7 @@ impl Fernet {
 impl MultiFernet {
     #[new]
     fn new(keys: Vec<String>) -> PyResult<Self> {
-        let fernets: Option<Vec<_>> = keys.iter().map(|k| fernet::Fernet::new(&k)).collect();
+        let fernets: Option<Vec<_>> = keys.iter().map(|k| fernet::Fernet::new(k)).collect();
         match fernets {
             None => Err(exceptions::PyValueError::new_err("Invalid arguments")),
             Some(f) => Ok(MultiFernet {
