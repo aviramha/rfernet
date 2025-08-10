@@ -1,6 +1,6 @@
 [package]
 name = "rfernet"
-version = "0.3.4"
+version = "0.3.5"
 authors = ["Aviram Hassan <aviramyhassan@gmail.com>"]
 description = "Fast Fernet bindings for Python"
 license = "MIT"
@@ -26,8 +26,8 @@ crate-type = ["cdylib"]
 
 [dependencies]
 fernet = "*"
-once_cell = "1.17.0"
+once_cell = "*"
 
 [dependencies.pyo3]
-version = "0.21.2"
-features = ["extension-module", "gil-refs"]
+version = "*"
+features = ["extension-module"]
