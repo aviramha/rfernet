@@ -37,7 +37,7 @@ jobs:
       - run: .venv/bin/pip install rfernet --no-index -f target/wheels
       - run: .venv/bin/pytest
       - name: Upload wheels to PyPI
-        if: secrets.TWINE_USERNAME != '' && secrets.TWINE_PASSWORD != ''
+        if: env.TWINE_USERNAME != '' && env.TWINE_PASSWORD != ''
         run: .venv/bin/twine upload --non-interactive --skip-existing target/wheels/*
       - name: Update GitHub Release
         if: github.event_name == 'release'
@@ -79,7 +79,7 @@ jobs:
       - run: .venv/bin/pip install rfernet --no-index -f target/wheels
       - run: .venv/bin/pytest
       - name: Upload wheels to PyPI
-        if: secrets.TWINE_USERNAME != '' && secrets.TWINE_PASSWORD != ''
+        if: env.TWINE_USERNAME != '' && env.TWINE_PASSWORD != ''
         run: .venv/bin/twine upload --non-interactive --skip-existing target/wheels/*
       - name: Update GitHub Release
         if: github.event_name == 'release'
@@ -122,7 +122,7 @@ jobs:
       - run: pip install rfernet --no-index -f target/wheels
       - run: pytest
       - name: Upload wheels to PyPI
-        if: secrets.TWINE_USERNAME != '' && secrets.TWINE_PASSWORD != ''
+        if: env.TWINE_USERNAME != '' && env.TWINE_PASSWORD != ''
         run: twine upload --non-interactive --skip-existing target/wheels/*
       - name: Update GitHub Release
         if: github.event_name == 'release'
@@ -158,5 +158,5 @@ jobs:
       - run: pip install -r requirements.txt
       - run: maturin sdist
       - name: Upload wheels to PyPI
-        if: secrets.TWINE_USERNAME != '' && secrets.TWINE_PASSWORD != ''
+        if: env.TWINE_USERNAME != '' && env.TWINE_PASSWORD != ''
         run: twine upload --non-interactive --skip-existing target/wheels/*

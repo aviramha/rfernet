@@ -1,4 +1,4 @@
-name: Release Win
+name: Release wheels for win
 on:
   workflow_dispatch:
   release:
@@ -190,8 +190,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Upload wheels to PyPI
-        if: secrets.TWINE_USERNAME != '' && secrets.TWINE_PASSWORD != ''
-        run: twine upload --non-interactive --skip-existing ./target/wheels/*
         env:
           TWINE_PASSWORD: ${{secrets.TWINE_PASSWORD}}
           TWINE_USERNAME: ${{secrets.TWINE_USERNAME}}
+        if: env.TWINE_USERNAME != '' && env.TWINE_PASSWORD != ''
+        run: twine upload --non-interactive --skip-existing ./target/wheels/*
