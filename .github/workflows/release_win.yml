@@ -26,30 +26,6 @@ jobs:
 
 #==================================================================
 
-      - name: Set up Python 3.8
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.8'
-
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip wheel twine
-          pip install -r requirements.txt
-
-      - name: Build wheels with maturin
-        run: |
-          maturin build --release --strip -i python --target x86_64-pc-windows-msvc
-
-      - name: Install built package
-        run: |
-          pip install rfernet --no-index --find-links target/wheels
-
-      - name: Run tests
-        run: |
-          pytest tests/
-
-#==================================================================
-
       - name: Set up Python 3.9
         uses: actions/setup-python@v5
         with:
