@@ -59,8 +59,8 @@ impl Fernet {
 #[pymethods]
 impl MultiFernet {
     #[new]
-    fn new(keys: Vec<&str>) -> PyResult<Self> {
-        let fernets: Option<Vec<_>> = keys.iter().map(|&k| fernet::Fernet::new(k)).collect();
+    fn new(keys: Vec<String>) -> PyResult<Self> {
+        let fernets: Option<Vec<_>> = keys.iter().map(|k| fernet::Fernet::new(k)).collect();
         match fernets {
             None => Err(exceptions::PyValueError::new_err("Invalid arguments")),
             Some(f) => Ok(MultiFernet {
@@ -85,9 +85,9 @@ impl MultiFernet {
 
 /// This module is a python module implemented in Rust.
 #[pymodule]
-fn rfernet(py: Python, m: &PyModule) -> PyResult<()> {
+fn rfernet(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_class::<Fernet>()?;
     m.add_class::<MultiFernet>()?;
-    m.add("DecryptionError", py.get_type::<exc::DecryptionError>())?;
+    m.add("DecryptionError", m.py().get_type::<exc::DecryptionError>())?;
     Ok(())
 }
