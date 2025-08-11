@@ -21,7 +21,7 @@ jobs:
       TWINE_PASSWORD: ${{secrets.TWINE_PASSWORD}}
       TWINE_USERNAME: ${{secrets.TWINE_USERNAME}}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - uses: actions-rs/toolchain@v1
         with:
           profile: minimal
@@ -63,7 +63,7 @@ jobs:
       TWINE_PASSWORD: ${{secrets.TWINE_PASSWORD}}
       TWINE_USERNAME: ${{secrets.TWINE_USERNAME}}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - uses: actions-rs/toolchain@v1
         with:
           profile: minimal
@@ -105,7 +105,7 @@ jobs:
       TWINE_PASSWORD: ${{secrets.TWINE_PASSWORD}}
       TWINE_USERNAME: ${{secrets.TWINE_USERNAME}}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - uses: actions-rs/toolchain@v1
         with:
           profile: minimal
@@ -113,7 +113,7 @@ jobs:
           override: true
           target: ${{ matrix.target-arch }}
       - name: Set up Python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
       - run: pip install -U pip wheel twine maturin
@@ -144,14 +144,14 @@ jobs:
       TWINE_PASSWORD: ${{secrets.TWINE_PASSWORD}}
       TWINE_USERNAME: ${{secrets.TWINE_USERNAME}}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - uses: actions-rs/toolchain@v1
         with:
           profile: minimal
           toolchain: stable
           override: true
       - name: Set up Python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v5
         with:
           python-version: 3.9
       - run: pip install -U pip wheel twine maturin
