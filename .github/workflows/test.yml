@@ -1,4 +1,5 @@
 on:
+  workflow_dispatch:
   push:
     branches: [ master ]
   pull_request:
@@ -12,17 +13,17 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest]
-        python-version: ['3.8', '3.9', '3.10', '3.11', '3.12']
+        python-version: ['3.9', '3.10', '3.11', '3.12', '3.13']
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - uses: actions-rs/toolchain@v1
         with:
           profile: minimal
           toolchain: stable
           override: true
       - name: Set up Python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
       - run: pip install --user -U pip wheel
@@ -38,7 +39,7 @@ jobs:
     name: Rustfmt
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - uses: actions-rs/toolchain@v1
         with:
           profile: minimal
@@ -54,7 +55,7 @@ jobs:
     name: Clippy
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - uses: actions-rs/toolchain@v1
         with:
           profile: minimal
@@ -71,10 +72,10 @@ jobs:
       runs-on: ubuntu-latest
       strategy:
         matrix:
-          python-path: ['cp38-cp38', 'cp39-cp39', 'cp310-cp310', 'cp311-cp311', 'cp312-cp312']
+          python-path: ['cp39-cp39', 'cp310-cp310', 'cp311-cp311', 'cp312-cp312', 'cp313-cp313']
       container: quay.io/pypa/manylinux_2_28_x86_64:latest
       steps:
-        - uses: actions/checkout@v2
+        - uses: actions/checkout@v4
         - uses: actions-rs/toolchain@v1
           with:
             profile: minimal
@@ -95,10 +96,10 @@ jobs:
       runs-on: ubuntu-24.04-arm
       strategy:
         matrix:
-          python-path: ['cp38-cp38', 'cp39-cp39', 'cp310-cp310', 'cp311-cp311', 'cp312-cp312']
+          python-path: ['cp39-cp39', 'cp310-cp310', 'cp311-cp311', 'cp312-cp312', 'cp313-cp313']
       container: quay.io/pypa/manylinux_2_28_aarch64:latest
       steps:
-        - uses: actions/checkout@v2
+        - uses: actions/checkout@v4
         - uses: actions-rs/toolchain@v1
           with:
             profile: minimal
@@ -118,11 +119,11 @@ jobs:
     name: Test macOS release build
     strategy:
       matrix:
-        python-version: ['3.8', '3.9', '3.10', '3.11', '3.12']
+        python-version: ['3.9', '3.10', '3.11', '3.12', '3.13']
         target-arch: ['aarch64-apple-darwin']
     runs-on: macos-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - uses: actions-rs/toolchain@v1
         with:
           profile: minimal
@@ -130,7 +131,7 @@ jobs:
           override: true
           target: ${{ matrix.target-arch }}
       - name: Set up Python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
       - run: pip install -U pip wheel twine maturin
