@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-path: ['cp39-cp39', 'cp310-cp310', 'cp311-cp311', 'cp312-cp312', 'cp313-cp313']
+        python-path: ['cp311-cp311', 'cp312-cp312', 'cp313-cp313', 'cp314-cp314', 'cp315-cp315']
     container: quay.io/pypa/manylinux_2_28_x86_64:latest
     env:
       TWINE_PASSWORD: ${{secrets.TWINE_PASSWORD}}
@@ -57,7 +57,7 @@ jobs:
     runs-on: ubuntu-24.04-arm
     strategy:
       matrix:
-        python-path: ['cp39-cp39', 'cp310-cp310', 'cp311-cp311', 'cp312-cp312', 'cp313-cp313']
+        python-path: ['cp311-cp311', 'cp312-cp312', 'cp313-cp313', 'cp314-cp314', 'cp315-cp315']
     container: quay.io/pypa/manylinux_2_28_aarch64:latest
     env:
       TWINE_PASSWORD: ${{secrets.TWINE_PASSWORD}}
@@ -98,7 +98,7 @@ jobs:
     name: Release macOS
     strategy:
       matrix:
-        python-version: ['3.9', '3.10', '3.11', '3.12', '3.13']
+        python-version: ['3.11', '3.12', '3.13', '3.14', '3.15']
         target-arch: ['aarch64-apple-darwin']
     runs-on: macos-latest
     env:
@@ -113,9 +113,10 @@ jobs:
           override: true
           target: ${{ matrix.target-arch }}
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v7
         with:
           python-version: ${{ matrix.python-version }}
+          allow-prereleases: true
       - run: pip install -U pip wheel twine maturin
       - run: pip install -r requirements.txt
       - run: maturin build --release --strip --manylinux off -i $pythonLocation/python --target ${{ matrix.target-arch }}
@@ -153,7 +154,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: 3.9
+          python-version: 3.11
       - run: pip install -U pip wheel twine maturin
       - run: pip install -r requirements.txt
       - run: maturin sdist

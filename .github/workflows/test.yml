@@ -13,7 +13,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest]
-        python-version: ['3.9', '3.10', '3.11', '3.12', '3.13']
+        python-version: ['3.11', '3.12', '3.13', '3.14', '3.15']
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
@@ -23,9 +23,10 @@ jobs:
           toolchain: stable
           override: true
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v7
         with:
           python-version: ${{ matrix.python-version }}
+          allow-prereleases: true
       - run: pip install --user -U pip wheel
       - run: pip install -r requirements.txt
       - run: maturin build --release --strip --manylinux off -i $pythonLocation/python
@@ -119,7 +120,7 @@ jobs:
     name: Test macOS release build
     strategy:
       matrix:
-        python-version: ['3.9', '3.10', '3.11', '3.12', '3.13']
+        python-version: ['3.11', '3.12', '3.13', '3.14', '3.15']
         target-arch: ['aarch64-apple-darwin']
     runs-on: macos-latest
     steps:
@@ -131,9 +132,10 @@ jobs:
           override: true
           target: ${{ matrix.target-arch }}
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v7
         with:
           python-version: ${{ matrix.python-version }}
+          allow-prereleases: true
       - run: pip install -U pip wheel twine maturin
       - run: pip install -U twine maturin
       - run: pip install -r requirements.txt

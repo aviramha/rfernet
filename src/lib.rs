@@ -84,7 +84,7 @@ impl MultiFernet {
 }
 
 /// This module is a python module implemented in Rust.
-#[pymodule]
+#[pymodule(gil_used = false)]
 fn rfernet(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_class::<Fernet>()?;
     m.add_class::<MultiFernet>()?;
